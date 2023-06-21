@@ -1,0 +1,21 @@
+SELECT CONCAT(Name, '(', LEFT(Occupation, 1), ')') AS ConcatName
+FROM OCCUPATIONS
+ORDER BY Name;
+SELECT CONCAT('There are a total of ', COUNT(Occupation), ' ', Lower(Occupation), 's.') AS OccupationCount
+FROM OCCUPATIONS
+GROUP BY Occupation
+ORDER BY COUNT(Occupation), Occupation;
+
+
+SELECT 
+[Doctor],[Professor],[Singer], [Actor] 
+FROM 
+    (SELECT *, 
+     RANK() OVER (PARTITION BY Occupation ORDER BY name) as rk
+    FROM OCCUPATIONS     
+    ) AS SourceTable
+    PIVOT
+    (
+        max(name)
+        FOR occupation IN ([Doctor],[Professor],[Singer], [Actor])
+    )   AS PivotTable;
